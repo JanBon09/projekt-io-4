@@ -9,4 +9,8 @@ app.get('/', (req, res) => {
 
 const server = http.createServer(app);
 
+server.listen(3000, () => {
+    console.log("HTTP server is running on port 3000");
+});
+
 export { server };
