@@ -16,6 +16,7 @@ function App() {
 
   return (
     <div className="App">
+        <h1>test</h1>
         {page === "default" && (
             <>
             <h1>Projekt IO-4</h1>
