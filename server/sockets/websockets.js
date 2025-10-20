@@ -31,6 +31,7 @@ io.on("connection", (socket) => {
         delete nicknames[socket.id];
         io.emit("nicknames", nicknames);
     });
+
 });
 
 server.listen(3000, () => {
