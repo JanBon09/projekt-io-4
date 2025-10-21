@@ -1,23 +1,37 @@
+import { nicknames } from "../websockets.js";
+
+
+
 // Ogólnie jest problem bo nie moge zrobic albo narazie nie wiem jak
 // zrobić eksport wielu funkcji ponieważ pierwsza connection tworzy jakby juz ten socket.io
 // na connecta i nie moge kolejnych handlerow dodac
 
-export function PlayerConnection(io, nicknames = {}) {
-    io.on("connection", (socket) => {
-        console.log("Nowy klient połączony:", socket.id, socket.handshake.address);
-        socket.emit("Witaj", { message: "connected", socketId: socket.id });
+// UPDATE : MOŻE DZIAŁAĆ (działa)
 
-        socket.on("create-nickname", (nick) => {
-            socket.nickname = nick;
-            nicknames[socket.id] = nick;
-            console.log("Użytkownik utworzył nazwę:", socket.id, nick);
-            io.emit("nicknames", nicknames);
-        });
+// Tutaj w PlayerContection używam "connection" w websockets do obsługi połączenia 
+// żebym mógł wszystko porozbijać na mniejsze funkcje
 
-        socket.on("disconnect", (reason) => {
-            console.log("Użytkownik rozłączony:", socket.id, reason);
-            delete nicknames[socket.id];
-            io.emit("nicknames", nicknames);
-        });
+export function PlayerConnection(socket) {
+    console.log("Nowy klient połączony:", socket.id, socket.handshake.address);
+    socket.emit("Witaj", { message: "connected", socketId: socket.id });
+}
+
+
+// Handler odpowiadający za nadawanie nicków (client : "create-nickname", nickname)
+
+export function NicknameHandler(socket, nicknames) {
+    socket.on("create-nickname", (nickname) => {
+        nicknames[socket.id] = nickname;
+        console.log(`${socket.id} ustawił nick na ${nickname}`);
+    });
+}
+
+
+// Handler odpowiadający za rozłączenie
+
+export function DisconnectionHandler(socket, nicknames) {
+    socket.on("disconnect", () => {
+        console.log(`Klient ${socket.id + " | " + nicknames[socket.id]} rozłączony.`);
+        delete nicknames[socket.id];
     });
 }
