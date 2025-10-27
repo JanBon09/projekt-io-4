@@ -1,0 +1,138 @@
+.mainContainer {
+    background-color: rgba(56, 54, 54, 1);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    color: white;
+}
+
+.logoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 30vh;
+    height: 40vh;
+    position: relative;
+}
+
+@keyframes updown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(var(--move));
+    }
+}
+
+.bubbleS{
+    width: 7%;
+    height: 7%;
+    position: absolute;
+    top: 20%;
+    right: 35%;
+    --move: -8px;
+    animation: updown 2s infinite;
+}
+
+
+.bubbleM{
+    position: absolute;
+    top: 0;
+    right: 25%;
+    width: 12%;
+    height: 12%;
+    --move: -20px;
+    animation: updown 3s infinite;
+}
+
+.bubbleL{
+    width: 20%;
+    height: 20%;
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    --move: -5px;
+    animation: updown 4s infinite;
+}
+
+@keyframes waggle{
+    0%   { transform: rotateZ(20deg); }
+    50%  { transform: rotateZ(-20deg); }
+    100% { transform: rotateZ(20deg); }
+}
+
+.flask{
+    position: absolute;
+    left: 0;
+    top: 10%;
+    width: 70%;
+    height: 70%;
+    animation: waggle 6s infinite alternate;
+}
+
+.logoTextContainer{
+    position: absolute;
+    bottom: 0;
+    font-size: 2.5rem;
+    cursor: default;
+    transition: transform 0.2s ease-in-out;
+}
+
+.logoTextContainer:hover{
+    transform: scale(1.2);
+}
+
+.inputContainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.inputName{
+    background-color: #201D1D;
+    border: 5px solid #5E1277;
+    border-radius: 20px;
+    font-family: "Pixelify Sans Medium", serif;
+    color: white;
+    padding: 10px;
+    width: 25vh;
+    height: 3vh;
+    font-size: 1.2rem;
+}
+
+.inputButton{
+    border: 5px solid #383636;
+    border-radius: 20px;
+    background: linear-gradient(to right, #A717D7, #570C71);
+    font-family: "Pixelify Sans SemiBold", "serif";
+    font-size: 2rem;
+    width: 50%;
+    color: white;
+    padding: 15px;
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.inputButton:hover{
+    transform: translateY(-10px);
+}
+
+.cornerLeft{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.cornerRight{
+    position: absolute;
+    top: 0;
+    right: 0;
+}

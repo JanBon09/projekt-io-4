@@ -1,7 +1,32 @@
+@font-face {
+    font-family: 'Pixelify Sans';
+    src: url('./assets/fonts/PixelifySans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pixelify Sans';
+    src: url('./assets/fonts/PixelifySans-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pixelify Sans';
+    src: url('./assets/fonts/PixelifySans-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+
 .App{
     display: flex;
     align-content: center;
     justify-content: center;
+    font-family: 'Pixelify Sans', sans-serif;
+    font-weight: bold;
 }
 
 .login_block{
