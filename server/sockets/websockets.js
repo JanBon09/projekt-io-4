@@ -32,7 +32,8 @@ io.on("connection", (socket) => {
     // Room Handlers
     
     ShowRooms(socket, rooms);
-    RoomConnection(socket);
+    RoomConnection(socket, rooms, nicknames);
+    RoomDetailsHandler(socket, rooms);
 
     //Game Handlers
 

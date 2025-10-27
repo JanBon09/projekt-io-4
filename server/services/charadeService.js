@@ -1,4 +1,5 @@
 export {Room as room} from "../models/room.js";
+import {rooms} from "../sockets/websockets.js";
 
 let codes = [];
 
@@ -14,6 +15,7 @@ export function GenerateCode(){
 
 export function CreateRoom(){
     const room = new Room(GenerateCode());
+    rooms.push(room);
     return room;
 }
 
