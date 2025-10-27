@@ -1,0 +1,17 @@
+.button{
+    border: 5px solid #383636;
+    border-radius: 20px;
+    background: linear-gradient(to right, #A717D7, #570C71);
+    font-family: "Pixelify Sans SemiBold", "serif";
+    font-size: 2rem;
+    width: 20%;
+    color: white;
+    padding: 25px 10px 25px 10px;
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;;
+}
+
+.button:hover{
+    transform: translateY(-10px);
+}
