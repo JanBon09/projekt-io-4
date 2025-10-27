@@ -3,7 +3,7 @@
 import { server } from "../src/index.js";
 import { Server as IOServer } from "socket.io";
 import { PlayerConnection, NicknameHandler, DisconnectionHandler } from "./handlers/playerHandler.js";
-import { ShowRooms, RoomConnection } from "./handlers/roomHandler.js";
+import { ShowRooms, RoomConnection, RoomDetailsHandler } from "./handlers/roomHandler.js";
 import { CheckCorrectAnswerHandler } from "./handlers/gameHandler.js";
 import { BroadcastMessage } from "./handlers/chatHandler.js";
 
