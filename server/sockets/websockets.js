@@ -3,6 +3,7 @@
 import { server } from "../src/index.js";
 import { Server as IOServer } from "socket.io";
 import { PlayerConnection, NicknameHandler, DisconnectionHandler } from "./handlers/playerHandler.js";
+import {ReceiveMessage} from "./handlers/chatHandler.js";
 
 const io = new IOServer(server, {
     cors: {
@@ -22,6 +23,7 @@ io.on("connection", (socket) => {
     PlayerConnection(socket);
     NicknameHandler(socket, nicknames);
     DisconnectionHandler(socket, nicknames);
+    ReceiveMessage(socket, nicknames);
 });
 
 
