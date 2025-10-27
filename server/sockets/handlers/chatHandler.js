@@ -1,8 +1,9 @@
 //Message Basic Echo Handler
 
-function SendMessage(socket){    
-    socket.on("message", (data) => {
-        console.log("message from", socket.id, data);
-        socket.emit("echo", data);
+export function BroadcastMessage(socket, nicknames) {    
+    socket.on("chat-message", (data) => {
+    console.log("message from", socket.id, data);
+    socket.emit("echo", {'sender': nicknames[socket.id] + " ", 'data': data});
+    socket.broadcast.emit("echo", {'sender': nicknames[socket.id] + " ", 'data': data});
     });
 }

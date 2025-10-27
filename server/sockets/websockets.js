@@ -3,6 +3,9 @@
 import { server } from "../src/index.js";
 import { Server as IOServer } from "socket.io";
 import { PlayerConnection, NicknameHandler, DisconnectionHandler } from "./handlers/playerHandler.js";
+import { ShowRooms, RoomConnection } from "./handlers/roomHandler.js";
+import { CheckCorrectAnswerHandler } from "./handlers/gameHandler.js";
+import { BroadcastMessage } from "./handlers/chatHandler.js";
 
 const io = new IOServer(server, {
     cors: {
@@ -19,10 +22,25 @@ let rooms = {};
 // Jeżeli taki sposób wam się podoba LAJK!
 
 io.on("connection", (socket) => {
+
+    //Player Handlers
+
     PlayerConnection(socket);
     NicknameHandler(socket, nicknames);
     DisconnectionHandler(socket, nicknames);
+    
+    // Room Handlers
+    
+    ShowRooms(socket, rooms);
+    RoomConnection(socket);
+
+    //Game Handlers
+
+    CheckCorrectAnswerHandler(socket);
+
+    //Chat Handlers
+    BroadcastMessage(socket, nicknames);
 });
 
 
-export {nicknames} ;
+export {nicknames, rooms} ;
