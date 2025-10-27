@@ -1,6 +1,3 @@
-import { nicknames } from "../websockets.js";
-
-
 
 // Ogólnie jest problem bo nie moge zrobic albo narazie nie wiem jak
 // zrobić eksport wielu funkcji ponieważ pierwsza connection tworzy jakby juz ten socket.io
