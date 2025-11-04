@@ -1,0 +1,87 @@
+.mainContainer{
+    width: 100vw;
+    height: 100vh;
+}
+
+.leftContainer {
+    width: 80%;
+    height: 100%;
+    float: left;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.upLeftContainer {
+    width: 100%;
+    height: 15%;
+    background-color: #383636;
+}
+
+.middleContainer {
+    width: 100%;
+    height: 70%;
+    background-color: red;
+    display: flex;
+    flex-direction: row;
+}
+
+.mainCanvas{
+    width: 70%;
+    height: 100%;
+    background-color: white;
+}
+.scoreboard{
+    width:20%;
+    height: 100%;
+    background-color: #383636;
+}
+
+.middleRightContainer {
+    height: 100%;
+    width: 10%;
+    background-color: #383636;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.downLeftContainer {
+    width: 100%;
+    height: 15%;
+    background-color: #383636;
+}
+
+.rightContainer {
+    width: 20%;
+    height: 100%;
+    background-color: #383636;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chatContainer{
+    width: 80%;
+    height: 80%;
+    background-color: white;
+}
+
+.underChatContainer{
+    width: 80%;
+    height: 10%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.inputContainer {
+    background-color: red;
+    width: 60%;
+}
+

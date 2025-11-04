@@ -1,0 +1,17 @@
+.bucketButton {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform .5s;
+}
+
+.bucketButton:hover {
+    transform: scale(1.2);
+}
+
+.bucketImage{
+    image-rendering: pixelated;
+    width: 7.5vh;
+    display: block;
+}

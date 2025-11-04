@@ -4,7 +4,7 @@ import { server } from "../src/index.js";
 import { Server as IOServer } from "socket.io";
 import { PlayerConnection, NicknameHandler, DisconnectionHandler } from "./handlers/playerHandler.js";
 import {ReceiveMessage} from "./handlers/chatHandler.js";
-
+import {RenderDrawing} from "./handlers/gameHandler.js";
 const io = new IOServer(server, {
     cors: {
         origin: "*",
@@ -24,6 +24,7 @@ io.on("connection", (socket) => {
     NicknameHandler(socket, nicknames);
     DisconnectionHandler(socket, nicknames);
     ReceiveMessage(socket, nicknames);
+    RenderDrawing(socket, nicknames);
 });
 
 

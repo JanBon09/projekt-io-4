@@ -14,7 +14,7 @@ function LoginPage(props) {
 
     const sendNickname = () => {
         socket.emit("create-nickname", username);
-        navigate("/select");
+        navigate("/select", {state: {username}});
     }
 
     return(
