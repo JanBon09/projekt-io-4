@@ -1,5 +1,5 @@
 
-export function RenderDrawing(socket, users){
+export function RenderDrawing(socket){
     socket.on("draw", (data) => {
         socket.broadcast.emit('drawing', data);
     })

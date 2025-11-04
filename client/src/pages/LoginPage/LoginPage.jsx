@@ -7,7 +7,7 @@ import {useSocket} from "../../context/SocketContext";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-function LoginPage(props) {
+function LoginPage() {
     const navigate = useNavigate();
     const socket = useSocket();
     const [username, setUsername] = useState("");

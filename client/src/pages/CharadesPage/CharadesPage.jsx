@@ -1,7 +1,6 @@
 import styles from './CharadesPage.module.css'
 import {useEffect, useRef, useState} from "react";
 import {useSocket} from "../../context/SocketContext";
-import AnimatedButton from "../../components/AnimatedButton/AnimatedButton";
 import BackArrow from "../../components/BackArrow/BackArrow";
 import ColorBucket from "../../components/ColorBucket/ColorBucket";
 import AnimatedComponent from "../../components/AnimatedComponent/AnimatedComponent";
