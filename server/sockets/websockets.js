@@ -3,6 +3,8 @@
 import { server } from "../src/index.js";
 import { Server as IOServer } from "socket.io";
 import { PlayerConnection, NicknameHandler, DisconnectionHandler } from "./handlers/playerHandler.js";
+import {ReceiveMessage} from "./handlers/chatHandler.js";
+import {RenderDrawing} from "./handlers/gameHandler.js";
 import { ShowRooms, RoomConnection, RoomDetailsHandler } from "./handlers/roomHandler.js";
 import { CheckCorrectAnswerHandler } from "./handlers/gameHandler.js";
 import { BroadcastMessage } from "./handlers/chatHandler.js";
@@ -28,6 +30,8 @@ io.on("connection", (socket) => {
     PlayerConnection(socket);
     NicknameHandler(socket, nicknames);
     DisconnectionHandler(socket, nicknames);
+    ReceiveMessage(socket, nicknames);
+    RenderDrawing(socket, nicknames);
     
     // Room Handlers
     

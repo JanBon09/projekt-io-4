@@ -1,3 +1,8 @@
+
+export function RenderDrawing(socket){
+    socket.on("draw", (data) => {
+        socket.broadcast.emit('drawing', data);
+    })
 import {nicknames, rooms} from "../websockets.js";
 import { isCorrectAnswer } from "../../services/charadeService.js";
 import { AddPoints } from "../../services/playerService.js";

@@ -5,8 +5,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     color: white;
+    position: relative;
+    gap: 0.8vw;
 }
 .cornerL{
     position: absolute;
@@ -18,4 +20,64 @@
     position: absolute;
     top: 0;
     right: 0;
+}
+
+.inputBox{
+    background-color: #201D1D;
+    border: 5px solid #5E1277;
+    border-radius: 20px;
+    font-family: "Pixelify Sans Medium", serif;
+    color: white;
+    padding: 20px 30px 20px 30px;
+    width: 25vh;
+    height: 3vh;
+    font-size: 1.1vw;
+}
+
+.welcomeText{
+    position: absolute;
+    top: 0;
+    left: 1vw;
+    font-size: 2.3vw;
+}
+
+
+.selectContainer{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.textLarge{
+    font-size: 4vw;
+}
+
+.textMedium{
+    font-size: 3rem;
+}
+
+.buttonContainer{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.joinContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25vh;
+}
+
+.leftText{
+    position: absolute;
+    right: -3vw;
+    bottom: 10vh;
+    transform: rotateZ(90deg);
+    font-size: 2vw;
+    cursor: pointer;
 }

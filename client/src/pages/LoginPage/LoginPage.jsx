@@ -7,14 +7,14 @@ import {useSocket} from "../../context/SocketContext";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-function LoginPage(props) {
+function LoginPage() {
     const navigate = useNavigate();
     const socket = useSocket();
     const [username, setUsername] = useState("");
 
     const sendNickname = () => {
         socket.emit("create-nickname", username);
-        navigate("/select");
+        navigate("/select", {state: {username}});
     }
 
     return(
