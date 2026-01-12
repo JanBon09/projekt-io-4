@@ -2,12 +2,13 @@
 
 import { server } from "../src/index.js";
 import { Server as IOServer } from "socket.io";
-import { PlayerConnection, NicknameHandler, DisconnectionHandler } from "./handlers/playerHandler.js";
-import {ReceiveMessage} from "./handlers/chatHandler.js";
+import { PlayerConnection, NicknameHandler } from "./handlers/playerHandler.js";
 import {RenderDrawing} from "./handlers/gameHandler.js";
-import { ShowRooms, RoomConnection, RoomDetailsHandler } from "./handlers/roomHandler.js";
+import {CreateRoom, JoinRoom, LeaveRoom} from "./handlers/roomHandler.js";
 import { CheckCorrectAnswerHandler } from "./handlers/gameHandler.js";
 import { BroadcastMessage } from "./handlers/chatHandler.js";
+import {Room} from "../models/room.js";
+
 
 const io = new IOServer(server, {
     cors: {
@@ -18,33 +19,27 @@ const io = new IOServer(server, {
 
 let nicknames = {};
 
-// Tu by musiał być już jakiś model rooms; (rooms tylko dla przykładu)
-let rooms = {};
+let rooms = [];
 
-// Jeżeli taki sposób wam się podoba LAJK!
+
 
 io.on("connection", (socket) => {
-
     //Player Handlers
-
     PlayerConnection(socket);
     NicknameHandler(socket, nicknames);
-    DisconnectionHandler(socket, nicknames);
-    ReceiveMessage(socket, nicknames);
-    RenderDrawing(socket, nicknames);
+
     
     // Room Handlers
-    
-    ShowRooms(socket, rooms);
-    RoomConnection(socket, rooms, nicknames);
-    RoomDetailsHandler(socket, rooms);
+    CreateRoom(socket, rooms, nicknames);
+    JoinRoom(socket, rooms, nicknames);
+    LeaveRoom(socket, rooms, nicknames);
 
     //Game Handlers
-
-    CheckCorrectAnswerHandler(socket);
+    RenderDrawing(socket, nicknames);
+    //CheckCorrectAnswerHandler(socket);
 
     //Chat Handlers
-    BroadcastMessage(socket, nicknames);
+    BroadcastMessage(socket, rooms,nicknames);
 });
 
 

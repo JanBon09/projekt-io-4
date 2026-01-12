@@ -1,12 +1,14 @@
-
-export function RenderDrawing(socket){
-    socket.on("draw", (data) => {
-        socket.broadcast.emit('drawing', data);
-    })
 import {nicknames, rooms} from "../websockets.js";
 import { isCorrectAnswer } from "../../services/charadeService.js";
-import { AddPoints } from "../../services/playerService.js";
+import {AddPoints, getPlayerRoom} from "../../services/playerService.js";
 import { BroadcastMessage } from "./chatHandler.js";
+
+
+export function RenderDrawing(socket) {
+    socket.on("draw", (data) => {
+        socket.to(data.roomId).emit('drawing', data);
+    })
+}
 
 export function CheckCorrectAnswerHandler(socket) {
     socket.on("check-answer", (answer) => {

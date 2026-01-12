@@ -1,6 +1,8 @@
 export class Player{
-    constructor(nickname, points) {
+    constructor(id,nickname, points, roomId) {
+        this.id = id;
         this.nickname = nickname;
         this.points = points;
+        this.roomId = roomId;
     }
 }

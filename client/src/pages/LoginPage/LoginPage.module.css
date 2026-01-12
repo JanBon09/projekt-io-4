@@ -105,6 +105,7 @@
     width: 25vh;
     height: 3vh;
     font-size: 1.2rem;
+    z-index: 1;
 }
 
 .inputButton{
@@ -119,6 +120,7 @@
     box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
     transition: transform 0.3s ease-in-out;
     cursor: pointer;
+    z-index: 1;
 }
 
 .inputButton:hover{
@@ -129,10 +131,12 @@
     position: absolute;
     bottom: 0;
     left: 0;
+    z-index: 0;
 }
 
 .cornerRight{
     position: absolute;
     top: 0;
     right: 0;
+    z-index: 0;
 }

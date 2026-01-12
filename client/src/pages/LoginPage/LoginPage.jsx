@@ -13,6 +13,7 @@ function LoginPage() {
     const [username, setUsername] = useState("");
 
     const sendNickname = () => {
+        localStorage.setItem("username", username);
         socket.emit("create-nickname", username);
         navigate("/select", {state: {username}});
     }

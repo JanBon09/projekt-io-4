@@ -4,6 +4,7 @@
     padding: 0;
     cursor: pointer;
     transition: transform .5s;
+    z-index: 1;
 }
 
 .bucketButton:hover {
