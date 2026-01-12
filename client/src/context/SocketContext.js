@@ -7,11 +7,13 @@ let socketInstance = null;
 
 const getSocketInstance = () => {
     if(!socketInstance) {
-        socketInstance = io('http://localhost:3000', {
+        socketInstance = io('https://projekt.alexandria-pcz.com', {
             autoConnect: true,
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionAttempts: 5,
+            transports: ['websocket'],
+            upgrade: false
         });
     }
     socketInstance.on("connect", () => {
