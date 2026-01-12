@@ -3,18 +3,37 @@ import { io } from 'socket.io-client';
 
 const SocketContext = createContext(null);
 
+let socketInstance = null;
+
+const getSocketInstance = () => {
+    if(!socketInstance) {
+        socketInstance = io('http://localhost:3000', {
+            autoConnect: true,
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionAttempts: 5,
+        });
+    }
+    socketInstance.on("connect", () => {
+        const savedUsername = localStorage.getItem("username");
+        if (savedUsername) {
+            socketInstance.emit("create-nickname", savedUsername);
+        }
+    });
+    return socketInstance;
+}
+
+
 export const SocketProvider = ({ children }) => {
-    const [socket, setSocket] = useState(null);
+    const [socket, setSocket] = useState(()=>getSocketInstance());
 
     useEffect(() => {
-        const newSocket = io('http://localhost:3000', {
-            autoConnect: true,
-        });
-
-        setSocket(newSocket);
+       const currSocket = getSocketInstance();
+        setSocket(currSocket);
 
         return () => {
-            newSocket.disconnect();
+            currSocket.off('connect');
+            currSocket.off('disconnect');
         };
     }, []);
 

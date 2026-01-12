@@ -1,20 +1,12 @@
 
-// Ogólnie jest problem bo nie moge zrobic albo narazie nie wiem jak
-// zrobić eksport wielu funkcji ponieważ pierwsza connection tworzy jakby juz ten socket.io
-// na connecta i nie moge kolejnych handlerow dodac
-
 // UPDATE : MOŻE DZIAŁAĆ (działa)
 
-// Tutaj w PlayerContection używam "connection" w websockets do obsługi połączenia 
-// żebym mógł wszystko porozbijać na mniejsze funkcje
+import {LeaveRoom} from "./roomHandler.js";
+import {getPlayerRoom} from "../../services/playerService.js";
 
 export function PlayerConnection(socket) {
-    console.log("Nowy klient połączony:", socket.id, socket.handshake.address);
-    socket.emit("Witaj", { message: "connected", socketId: socket.id });
+    console.log("Nowy klient połączony:", socket.id);
 }
-
-
-// Handler odpowiadający za nadawanie nicków (client : "create-nickname", nickname)
 
 export function NicknameHandler(socket, nicknames) {
     socket.on("create-nickname", (nickname) => {
@@ -24,11 +16,14 @@ export function NicknameHandler(socket, nicknames) {
 }
 
 
-// Handler odpowiadający za rozłączenie
-
-export function DisconnectionHandler(socket, nicknames) {
-    socket.on("disconnect", () => {
-        console.log(`Klient ${socket.id + " | " + nicknames[socket.id]} rozłączony.`);
-        delete nicknames[socket.id];
-    });
-}
+// export function DisconnectionHandler(socket, nicknames, rooms) {
+//     socket.on("disconnect", () => {
+//         console.log(`Klient ${socket.id + " | " + nicknames[socket.id]} rozłączony.`);
+//         const roomId = getPlayerRoom(socket.id, rooms);
+//         console.log(roomId);
+//         if (roomId) {
+//             LeaveRoom(socket, rooms.get(roomId), socket.id);
+//         }
+//         delete nicknames[socket.id];
+//     });
+// }

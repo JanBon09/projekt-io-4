@@ -15,7 +15,8 @@ export default function AnimatedRoutes() {
                 <Route path="/" element={<PageWrapper><LoginPage /></PageWrapper>} />
                 <Route path="/test" element={<PageWrapper><TestPage /></PageWrapper>} />
                 <Route path="/select" element={<PageWrapper><SelectPage /></PageWrapper>} />
-                <Route path="/charades" element={<PageWrapper><CharadesPage /></PageWrapper>} />
+                <Route path="/charades/:id" element={<PageWrapper><CharadesPage /></PageWrapper>} />
+
             </Routes>
         </AnimatePresence>
     );

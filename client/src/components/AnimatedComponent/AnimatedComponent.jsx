@@ -6,6 +6,7 @@ function AnimatedComponent(props) {
     const frameWidth = props.totalWidth/totalFrames;
     const aspectRatio = props.frameHeight / frameWidth;
     const handleClick = () => {
+        props.onClick?.();
         let currentFrame = 0;
         const interval = setInterval(() => {
             currentFrame++;
@@ -14,7 +15,6 @@ function AnimatedComponent(props) {
             if (currentFrame >= totalFrames - 1) {
                 clearInterval(interval);
                 setFrame(0);
-                props.onClick?.();
             }
         }, props.timeout);
     };

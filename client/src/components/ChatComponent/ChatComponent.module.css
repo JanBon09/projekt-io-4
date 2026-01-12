@@ -1,0 +1,23 @@
+.myScroll {
+    scrollbar-width: thin;
+}
+
+.myScroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* track (background) */
+.myScroll::-webkit-scrollbar-track {
+    background: #000000;
+    border-radius: 5px;
+}
+
+/* thumb (the handle) */
+.myScroll::-webkit-scrollbar-thumb {
+    background: #A717D7;
+    border-radius: 4px;
+}
+
+.myScroll::-webkit-scrollbar-thumb:hover {
+    background: #570C71;
+}
