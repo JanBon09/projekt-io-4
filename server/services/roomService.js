@@ -6,6 +6,7 @@ let codes = [];
 export function AddPlayerToRoom(room, player){
     player.room = room.id;
     room.players.push(player);
+    room.totalRounds = room.players.length *3;
 }
 
 export function GenerateCode(){

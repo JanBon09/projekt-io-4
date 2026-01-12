@@ -1,63 +1,85 @@
-import {Player} from "../../models/player.js";
-import {AddPlayerToRoom, GenerateCode} from "../../services/roomService.js";
-import {Room} from "../../models/room.js";
-import {getPlayerRoom} from "../../services/playerService.js";
+import { Room } from "../../models/room.js";
+import { AddPlayerToRoom, GenerateCode } from "../../services/roomService.js";
+import { Player } from "../../models/player.js";
 
+// Importujemy funkcję z gameHandler, aby zaktualizować listę graczy (z ikoną korony) przy zmianach
+import { sendScoreUpdate } from "./gameHandler.js";
 
-export function CreateRoom(socket, rooms, nicknames){
+export function CreateRoom(socket, rooms, nicknames) {
     socket.on("create-room", (data) => {
         const nickname = nicknames[socket.id];
-        console.log(`User ${nickname} poprosił o utworzenie pokoju!`);
+        console.log(`User ${nickname} tworzy pokój.`);
 
         const id = GenerateCode();
-        console.log(`Wygenerowano pokój o id: ${id}`);
-        const room = new Room(id, "", []);
+        // Czwarty argument to ownerId - ustawiamy twórcę jako właściciela
+        const room = new Room(id, "", [], socket.id);
         rooms.push(room);
 
-        const player = new Player(socket.id, nickname,0, id);
+        const player = new Player(socket.id, nickname, 0, id);
         AddPlayerToRoom(room, player);
-        socket.join(id);
-        console.log("Uzytkownik: " + nickname + " dołączył do pokoju o ID: " + id);
-        socket.to(id).emit("player-joined", {nickname: nickname});
-        socket.emit("room-joined", {roomId: id})
-    })
-}
 
+        socket.join(id);
+        socket.emit("room-joined", { roomId: id });
+    });
+}
 
 export function JoinRoom(socket, rooms, nicknames) {
-    socket.on("join-room", async roomId => {
+    socket.on("join-room", async (roomId) => {
         const username = nicknames[socket.id];
-        const room = rooms.find((room) => room.id === roomId);
-        if(room){
-            const player = new Player(socket.id, username,0, roomId);
+        const room = rooms.find((r) => r.id === roomId);
+
+        if (room) {
+            const player = new Player(socket.id, username, 0, roomId);
             AddPlayerToRoom(room, player);
-            await socket.join(roomId)
-            console.log("Uzytkownik: " + username + " dołączył do pokoju o ID: " + roomId);
-            socket.to(roomId).emit("player-joined", {nickname: username});
-            socket.emit("room-joined", {roomId: roomId})
+            await socket.join(roomId);
+
+            console.log(`${username} dołączył do pokoju ${roomId}`);
+
+            socket.to(roomId).emit("player-joined", { nickname: username });
+            socket.emit("room-joined", { roomId: roomId });
+        } else {
+            socket.emit("room-not-found");
         }
-        else{
-            console.log("Pokój o id " + roomId + " nie istnieje");
-            console.log(rooms);
-            socket.emit("room-not-found")
-        }
-    })
+    });
 }
 
-export function LeaveRoom(socket, rooms) {
-    socket.on("leave-room", async roomId => {
-        const room = rooms.find((room) => room.id === roomId);
-        const playerIndex = room.players.findIndex(p => socket.id === p.id);
+export function LeaveRoom(socket, rooms, io) { // Dodajemy 'io' jako argument w websockets.js
+    const handleLeave = (roomId) => {
+        const room = rooms.find((r) => r.id === roomId);
+        if (!room) return;
+
+        const playerIndex = room.players.findIndex(p => p.id === socket.id);
         if (playerIndex !== -1) {
             const player = room.players[playerIndex];
             room.players.splice(playerIndex, 1);
-            player.room = null;
-            socket.leave(room.id);
-            console.log(`${player.nickname} opuścił pokój: ${room.id}`);
-            socket.to(room.id).emit("player-left", {
-                nickname: player.nickname,
-            });
-        }
-    })
 
+            socket.leave(roomId);
+            console.log(`${player.nickname} opuścił pokój ${roomId}`);
+
+            socket.to(roomId).emit("player-left", { nickname: player.nickname });
+
+            // LOGIKA PRZEKAZYWANIA WŁAŚCICIELA
+            if (socket.id === room.ownerId && room.players.length > 0) {
+                room.ownerId = room.players[0].id; // Nowym szefem pierwszy gracz z listy
+                console.log(`Nowym właścicielem pokoju ${roomId} jest ${room.players[0].nickname}`);
+            }
+
+            // Jeśli gra trwa lub jesteśmy w lobby, aktualizujemy listę (żeby pokazać nową koronę)
+            if (io) sendScoreUpdate(io, room);
+        }
+
+        // Usuń pokój jeśli pusty
+        if (room.players.length === 0) {
+            const roomIndex = rooms.indexOf(room);
+            if (roomIndex !== -1) rooms.splice(roomIndex, 1);
+        }
+    };
+
+    socket.on("leave-room", (roomId) => handleLeave(roomId));
+
+    socket.on("disconnect", () => {
+        // Znajdź pokój gracza (uproszczone szukanie)
+        const room = rooms.find(r => r.players.some(p => p.id === socket.id));
+        if (room) handleLeave(room.id);
+    });
 }

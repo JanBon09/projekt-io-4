@@ -30,7 +30,7 @@ function ChatComponent({children}){
             style={{
                 position: "relative",
                 height: "80%",
-                width: "80%",
+                width: "100%",
                 overflow: "scroll",
                 backgroundColor: "#201D1D",
                 overflowX: "hidden",

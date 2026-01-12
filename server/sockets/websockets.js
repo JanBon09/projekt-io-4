@@ -1,14 +1,14 @@
-// Websocket.js Zajmuję się obsługiwaniem handlerów związnych z WebSocketami
-
 import { server } from "../src/index.js";
 import { Server as IOServer } from "socket.io";
 import { PlayerConnection, NicknameHandler } from "./handlers/playerHandler.js";
-import {RenderDrawing} from "./handlers/gameHandler.js";
-import {CreateRoom, JoinRoom, LeaveRoom} from "./handlers/roomHandler.js";
-import { CheckCorrectAnswerHandler } from "./handlers/gameHandler.js";
+import { CreateRoom, JoinRoom, LeaveRoom } from "./handlers/roomHandler.js";
 import { BroadcastMessage } from "./handlers/chatHandler.js";
-import {Room} from "../models/room.js";
-
+import {
+    RenderDrawing,
+    StartGameHandler,
+    CheckCorrectAnswerHandler,
+    SyncGameHandler
+} from "./handlers/gameHandler.js";
 
 const io = new IOServer(server, {
     cors: {
@@ -18,29 +18,26 @@ const io = new IOServer(server, {
 });
 
 let nicknames = {};
-
 let rooms = [];
 
-
-
 io.on("connection", (socket) => {
-    //Player Handlers
+    // Player
     PlayerConnection(socket);
     NicknameHandler(socket, nicknames);
 
-    
-    // Room Handlers
+    // Room
     CreateRoom(socket, rooms, nicknames);
     JoinRoom(socket, rooms, nicknames);
-    LeaveRoom(socket, rooms, nicknames);
+    LeaveRoom(socket, rooms, io); // Przekazujemy 'io' do LeaveRoom
 
-    //Game Handlers
-    RenderDrawing(socket, nicknames);
-    //CheckCorrectAnswerHandler(socket);
+    // Game
+    RenderDrawing(socket);
+    StartGameHandler(io, socket, rooms);
+    CheckCorrectAnswerHandler(io, socket, rooms);
+    SyncGameHandler(io, socket, rooms); // NOWY HANDLER
 
-    //Chat Handlers
-    BroadcastMessage(socket, rooms,nicknames);
+    // Chat
+    BroadcastMessage(socket, rooms, nicknames);
 });
 
-
-export {nicknames, rooms} ;
+export { nicknames, rooms };

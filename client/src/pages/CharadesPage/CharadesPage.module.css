@@ -1,145 +1,300 @@
-.mainContainer{
+.mainContainer {
+    display: flex;
     width: 100vw;
     height: 100vh;
+    background-color: #2c2c2c;
+    color: white;
+    overflow: hidden;
+    position: relative;
 }
 
+/* --- LEWA KOLUMNA (20%) --- */
 .leftContainer {
-    width: 80%;
+    width: 20%;
     height: 100%;
-    float: left;
     display: flex;
-    align-items: center;
     flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 10;
 }
 
 .upLeftContainer {
-    width: 100%;
-    height: 15%;
-    background-color: #383636;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
 }
 
+/* Scoreboard */
+.scoreboardContainer {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid #555;
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.scoreTitle {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #FFD700;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #555;
+    padding-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.playerList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.playerItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.6rem;
+}
+
+.playerName {
+    font-weight: bold;
+    color: #ddd;
+}
+
+.playerPoints {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+/* --- ŚRODEK (55% - Zmniejszony, aby dać miejsce czatowi) --- */
 .middleContainer {
+    width: 55%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+/* Pasek nad canvasem */
+.gameInfoBar {
     width: 100%;
-    height: 70%;
     display: flex;
-    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 10px 0;
+    min-height: 60px;
 }
 
-.mainCanvas{
-    width: 70%;
-    height: 100%;
+.lobbyInfo {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.startBtn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #1e7e34;
+}
+
+.startBtn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #1e7e34;
+}
+
+.activeGameInfo {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+}
+
+.infoItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    font-size: 1.4rem;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.value{
+    font-size: 1.8rem;
+}
+
+.timerValue {
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.timerRed {
+    color: #ff4d4d;
+    animation: pulse 1s infinite;
+}
+
+.secretWord {
+    font-size: 1.8rem;
+    color: #FFD700;
+    font-weight: bold;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.drawerName {
+    font-size: 1.8rem;
+    color: #00BFFF;
+    font-weight: bold;
+}
+
+/* Canvas */
+.mainCanvas {
     background-color: white;
-}
-.scoreboard{
-    width:20%;
-    height: 100%;
-    background-color: #383636;
-}
-
-.middleRightContainer {
-    height: 100%;
-    width: 10%;
-    background-color: #383636;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    max-width: 95%;
+    max-height: 60vh; /* Trochę mniejszy canvas, żeby zmieściły się większe narzędzia */
+    cursor: crosshair;
 }
 
-.downLeftContainer {
-    width: 80%;
-    height: 15%;
-    padding-top: 20px;
-    background-color: #383636;
+/* Kontener na narzędzia pod canvasem */
+.toolsContainer {
+    margin-top: 25px; /* Większy odstęp od góry */
     display: flex;
-    gap: 10px;
     justify-content: center;
     align-items: center;
-    margin-left: 12.5%;
-}
-
-.rightContainer {
-    width: 20%;
-    height: 100%;
-    background-color: #383636;
-    float: right;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    /* Usunięto gap, sterujemy marginem w dzieciach */
+    background: rgba(0,0,0,0.3);
+    padding: 15px 30px;
+    border-radius: 15px;
+    border: 2px solid #444;
+    width: 90%;
     gap: 20px;
 }
 
+/* --- POWIĘKSZANIE IKONEK --- */
+/* Targetujemy bezpośrednie divy wewnątrz toolsContainer (AnimatedComponent) */
+.toolsContainer > div {
 
-.underChatContainer{
-    width: 80%;
-    height: 10%;
+    margin: 0 15px; /* Odstęp między ikonkami */
+    image-rendering: pixelated; /* Zachowanie ostrości pikseli */
+}
+
+/* Wiaderka po prawej od canvasa */
+.middleRightContainer {
+    position: absolute;
+    right: -150px; /* Przesunięcie, bo kolumna środkowa jest węższa */
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+    background: rgba(0,0,0,0.3);
+    padding: 15px 30px;
+    border-radius: 15px;
+    border: 2px solid #444;
+    width: 7.5%;
+}
+
+/* --- PRAWA STRONA (25% - Poszerzona) --- */
+.rightContainer {
+    width: 15%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    right: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 10;
+    background-color: #222;
+    border-left: 2px solid #444;
+    position: absolute;
+}
+
+.chatContainer {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Sekcja pod czatem (Input + Button) */
+.underChatContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center; /* WYŚRODKOWANIE PRZYCISKU SEND */
 }
 
 .inputContainer {
-    display: flex;
-    width: 60%;
-    align-items: center;
-    justify-content: center;
-}
-
-.chatInput{
     width: 100%;
-    height: 30%;
-    border: 2px solid black;
-    border-radius: 20px;
-    padding: 10px;
-    font-family: 'Pixelify Sans', sans-serif;
-    font-size: 1rem;
-    background-color: #201D1D;
-    color: #7b7b7b;
 }
 
-
-.message{
-    padding-bottom: 10px;
+.chatInput {
     width: 100%;
-    height: 3%;
-    font-size: 1.2rem;
-    margin-left: 5%;
-    color: #7b7b7b;
+    padding: 8px 12px; /* ZMNIEJSZONY INPUT (wysokość) */
+    font-size: 1.3rem; /* Nieco mniejsza czcionka */
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: #333;
+    color: white;
+    outline: none;
+    box-sizing: border-box;
 }
 
-.message:first-child{
-    margin-top: 10px;
+.chatInput:focus {
+    border-color: #888;
 }
 
-.chatUser{
-    color: blue;
+.message {
+    font-size: 1.3rem;
+    line-height: 1.4;
+    word-wrap: break-word;
 }
 
-.userJoin{
-    color: lawngreen;
+.chatUser {
+    font-weight: bold;
+    color: #4da6ff;
 }
 
-.userLeft{
-    color: red;
-}
+.userJoin { color: #4CAF50; font-size: 1.3rem; font-style: italic; }
+.userLeft { color: #ff4d4d; font-size: 1.3rem; font-style: italic; }
 
+.cornerLeft { position: absolute; bottom: 0; left: 0; width: 300px; height: auto; pointer-events: none; z-index: 1; }
+.cornerRight { position: absolute; top: 0; right: 0; width: 300px; height: auto; pointer-events: none; z-index: 1; }
 
-.cornerLeft{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-
-}
-
-.cornerRight{
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 0;
-}
-
-canvas{
-    z-index: 1;
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
