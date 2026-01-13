@@ -43,7 +43,7 @@ export function JoinRoom(socket, rooms, nicknames) {
     });
 }
 
-export function LeaveRoom(socket, rooms, io) { // Dodajemy 'io' jako argument w websockets.js
+export function LeaveRoom(socket, rooms, io) {
     const handleLeave = (roomId) => {
         const room = rooms.find((r) => r.id === roomId);
         if (!room) return;
@@ -58,17 +58,14 @@ export function LeaveRoom(socket, rooms, io) { // Dodajemy 'io' jako argument w 
 
             socket.to(roomId).emit("player-left", { nickname: player.nickname });
 
-            // LOGIKA PRZEKAZYWANIA WŁAŚCICIELA
             if (socket.id === room.ownerId && room.players.length > 0) {
                 room.ownerId = room.players[0].id; // Nowym szefem pierwszy gracz z listy
                 console.log(`Nowym właścicielem pokoju ${roomId} jest ${room.players[0].nickname}`);
             }
 
-            // Jeśli gra trwa lub jesteśmy w lobby, aktualizujemy listę (żeby pokazać nową koronę)
             if (io) sendScoreUpdate(io, room);
         }
 
-        // Usuń pokój jeśli pusty
         if (room.players.length === 0) {
             const roomIndex = rooms.indexOf(room);
             if (roomIndex !== -1) rooms.splice(roomIndex, 1);
@@ -78,7 +75,6 @@ export function LeaveRoom(socket, rooms, io) { // Dodajemy 'io' jako argument w 
     socket.on("leave-room", (roomId) => handleLeave(roomId));
 
     socket.on("disconnect", () => {
-        // Znajdź pokój gracza (uproszczone szukanie)
         const room = rooms.find(r => r.players.some(p => p.id === socket.id));
         if (room) handleLeave(room.id);
     });
