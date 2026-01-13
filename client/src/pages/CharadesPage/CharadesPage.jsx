@@ -28,23 +28,21 @@ function CharadesPage() {
     const [msg, setMsg] = useState("");
     const [messages, setMessages] = useState([]);
 
-    // --- STANY GRY ---
     const [gameActive, setGameActive] = useState(false);
     const [round, setRound] = useState(0);
-    const [maxRounds, setMaxRounds] = useState(5); // Nowy stan
+    const [maxRounds, setMaxRounds] = useState(5);
     const [isPainter, setIsPainter] = useState(false);
     const [secretWord, setSecretWord] = useState("");
     const [painterName, setPainterName] = useState("");
     const [timeLeft, setTimeLeft] = useState(120);
     const [players, setPlayers] = useState([]);
+    const [hintWord, setHintWord] = useState("");
 
-    // Obliczamy czy jestem właścicielem na podstawie listy graczy
     const isOwner = players.find(p => p.id === socket?.id)?.isOwner || false;
 
     useEffect(() => {
         if (!canvasRef.current || !socket) return;
 
-        // NAJWAŻNIEJSZE: Poproś serwer o aktualny stan po wejściu
         socket.emit("sync-game", id);
 
         socket.on("drawing", (data) => drawUser(data));
@@ -54,7 +52,6 @@ function CharadesPage() {
         });
         socket.on("player-joined", (data) => {
             setMessages((prev) => [...prev, {username: data.nickname, type: "user-join"}]);
-            // Poproś o odświeżenie listy graczy (dla pewności)
             socket.emit("sync-game", id);
         });
         socket.on("player-left", (data) => {
@@ -64,14 +61,13 @@ function CharadesPage() {
         socket.on("new-round", (data) => {
             setGameActive(true);
             setRound(data.round);
-            setMaxRounds(data.maxRounds); // Ustawiamy max rund
+            setMaxRounds(data.maxRounds);
             setPainterName(data.painterNickname);
             setIsPainter(data.painterId === socket.id);
             setSecretWord("");
             setTimeLeft(data.timeLeft || 120);
+            setHintWord(data.hint || "");
 
-            // Czyść canvas tylko jeśli to faktycznie nowa runda (nie przy odświeżaniu)
-            // Można dodać logikę sprawdzającą, ale dla uproszczenia czyścimy:
             const canvas = canvasRef.current;
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -198,11 +194,9 @@ function CharadesPage() {
     return (
         <div className={styles.mainContainer}>
 
-            {/* LEWA KOLUMNA: TYLKO SCOREBOARD */}
             <div className={styles.leftContainer}>
                 <div className={styles.upLeftContainer}>
                     <BackArrow roomId={id}></BackArrow>
-
                     <div className={styles.scoreboardContainer}>
                         <h3 className={styles.scoreTitle}>Scoreboard</h3>
                         <ul className={styles.playerList}>
@@ -220,15 +214,11 @@ function CharadesPage() {
                 </div>
             </div>
 
-            {/* ŚRODEK */}
             <div className={styles.middleContainer}>
-
-                {/* INFO BAR */}
                 <div className={styles.gameInfoBar}>
                     {!gameActive ? (
                         <div className={styles.lobbyInfo}>
                             <h2>Room ID: {id}</h2>
-                            {/* LOGIKA: PRZYCISK TYLKO DLA WŁAŚCICIELA */}
                             {isOwner ? (
                                 <button className={styles.startBtn} onClick={startGame}>START</button>
                             ) : (
@@ -255,8 +245,9 @@ function CharadesPage() {
                                     </>
                                 ) : (
                                     <>
-                                        <span className={styles.label}>Draws</span>
-                                        <span className={styles.drawerName}>{painterName}</span>
+                                        <span className={styles.label}>Current password</span>
+                                        <span className={styles.secretWord} style={{letterSpacing: '3px'}}>{hintWord}</span>
+                                        <span style={{fontSize: '0.8rem', color: '#aaa', marginTop: '5px'}}>Draws: {painterName}</span>
                                     </>
                                 )}
                             </div>
@@ -264,7 +255,6 @@ function CharadesPage() {
                     )}
                 </div>
 
-                {/* CANVAS */}
                 <canvas width="1920" height="1080"
                         onMouseMove={draw}
                         onMouseDown={() => setIsDrawing(true)}
@@ -273,7 +263,6 @@ function CharadesPage() {
                         className={styles.mainCanvas}>
                 </canvas>
 
-                {/* NARZĘDZIA POD CANVASEM */}
                 <div className={styles.toolsContainer} style={{visibility: (isPainter || !gameActive) ? 'visible' : 'hidden'}}>
                     <AnimatedComponent frames={8} totalWidth={768} frameHeight={93} widthPercent={10} heightPercent={80} spriteSheet={cursorSmSprite} timeout={70} onClick={() => changeStrokeSize("sm")} />
                     <AnimatedComponent frames={8} totalWidth={768} frameHeight={93} widthPercent={10} heightPercent={80} spriteSheet={cursorMdSprite} timeout={70} onClick={() => changeStrokeSize("md")} />
@@ -282,7 +271,6 @@ function CharadesPage() {
                     <AnimatedComponent frames={8} totalWidth={768} frameHeight={93} widthPercent={10} heightPercent={80} spriteSheet={eraserButtonSheet} timeout={70} onClick={() => setState("ERASING")} />
                 </div>
 
-                {/* WIADERKA Z BOKU */}
                 {(isPainter || !gameActive) && (
                     <div className={styles.middleRightContainer}>
                         <ColorBucket color="black" onClick={setColor}></ColorBucket>
@@ -295,7 +283,6 @@ function CharadesPage() {
                 )}
             </div>
 
-            {/* PRAWA STRONA (CHAT) */}
             <div className={styles.rightContainer}>
                 <ChatComponent className={styles.chatContainer}>
                     {messages.map((data, index) => (

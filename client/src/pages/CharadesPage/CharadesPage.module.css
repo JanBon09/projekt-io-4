@@ -74,7 +74,6 @@
     font-weight: bold;
 }
 
-/* --- ŚRODEK (55% - Zmniejszony, aby dać miejsce czatowi) --- */
 .middleContainer {
     width: 55%;
     height: 100%;
@@ -86,7 +85,6 @@
     padding-bottom: 20px;
 }
 
-/* Pasek nad canvasem */
 .gameInfoBar {
     width: 100%;
     display: flex;
@@ -170,23 +168,22 @@
     font-weight: bold;
 }
 
-/* Canvas */
+
 .mainCanvas {
     background-color: white;
     box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
     border-radius: 5px;
     max-width: 95%;
-    max-height: 60vh; /* Trochę mniejszy canvas, żeby zmieściły się większe narzędzia */
+    max-height: 60vh;
     cursor: crosshair;
 }
 
-/* Kontener na narzędzia pod canvasem */
+
 .toolsContainer {
-    margin-top: 25px; /* Większy odstęp od góry */
+    margin-top: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Usunięto gap, sterujemy marginem w dzieciach */
     background: rgba(0,0,0,0.3);
     padding: 15px 30px;
     border-radius: 15px;
@@ -195,18 +192,16 @@
     gap: 20px;
 }
 
-/* --- POWIĘKSZANIE IKONEK --- */
-/* Targetujemy bezpośrednie divy wewnątrz toolsContainer (AnimatedComponent) */
-.toolsContainer > div {
 
-    margin: 0 15px; /* Odstęp między ikonkami */
-    image-rendering: pixelated; /* Zachowanie ostrości pikseli */
+
+.toolsContainer > div {
+    margin: 0 15px;
+    image-rendering: pixelated;
 }
 
-/* Wiaderka po prawej od canvasa */
 .middleRightContainer {
     position: absolute;
-    right: -150px; /* Przesunięcie, bo kolumna środkowa jest węższa */
+    right: -150px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -220,7 +215,6 @@
     width: 7.5%;
 }
 
-/* --- PRAWA STRONA (25% - Poszerzona) --- */
 .rightContainer {
     width: 15%;
     height: 100%;
@@ -248,12 +242,12 @@
     gap: 5px;
 }
 
-/* Sekcja pod czatem (Input + Button) */
+
 .underChatContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    align-items: center; /* WYŚRODKOWANIE PRZYCISKU SEND */
+    align-items: center;
 }
 
 .inputContainer {
@@ -262,14 +256,15 @@
 
 .chatInput {
     width: 100%;
-    padding: 8px 12px; /* ZMNIEJSZONY INPUT (wysokość) */
-    font-size: 1.3rem; /* Nieco mniejsza czcionka */
+    padding: 8px 12px;
+    font-size: 1.3rem;
     border-radius: 8px;
     border: 1px solid #555;
     background: #333;
     color: white;
     outline: none;
     box-sizing: border-box;
+    font-family: "Pixelify Sans", sans-serif;
 }
 
 .chatInput:focus {

@@ -41,6 +41,15 @@ function nextRound(io, room) {
     room.currentAnswer = generateRandomAnswer();
     room.solvedBy = [];
 
+
+    const wordUpper = room.currentAnswer.toUpperCase();
+    room.currentHint = wordUpper.split('').map((char, index) => {
+        if (char === ' ') return '  ';
+        if (index === 0) return char;
+        return '_';
+    }).join(' ');
+
+
     const painterIndex = (room.round - 1) % room.players.length;
     const painter = room.players[painterIndex];
     room.drawingPlayerId = painter.id;
@@ -52,7 +61,8 @@ function nextRound(io, room) {
         maxRounds: room.totalRounds,
         painterNickname: painter.nickname,
         painterId: painter.id,
-        timeLeft: 120
+        timeLeft: 120,
+        hint: room.currentHint
     });
 
     sendScoreUpdate(io, room);
@@ -97,7 +107,8 @@ export function SyncGameHandler(io, socket, rooms) {
                     maxRounds: room.totalRounds,
                     painterNickname: room.players.find(p => p.id === room.drawingPlayerId)?.nickname || "?",
                     painterId: room.drawingPlayerId,
-                    timeLeft: room.timeLeft
+                    timeLeft: room.timeLeft,
+                    hint: room.currentHint
                 });
 
                 if (socket.id === room.drawingPlayerId) {
