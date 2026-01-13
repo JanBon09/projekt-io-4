@@ -14,9 +14,3 @@ export function GenerateCode(){
     codes.push(code);
     return code;
 }
-
-export function CreateRoom(){
-    const room = new Room(GenerateCode(), "", []);
-    rooms.push(room);
-    return room;
-}
