@@ -1,20 +1,17 @@
 import { nicknames } from "../websockets.js";
-import { generateRandomAnswer } from "../../services/charadeService.js";
-import { AddPoints } from "../../services/playerService.js";
+import {generateRandomAnswer, normalizeAnswer} from "../../services/charadeService.js";
 
-// --- POMOCNICZA: Wysyłanie listy graczy (w tym info kto jest właścicielem) ---
 export function sendScoreUpdate(io, room) {
     const playerList = room.players.map(p => ({
         id: p.id,
         nickname: p.nickname,
         points: p.points,
         isDrawer: p.id === room.drawingPlayerId,
-        isOwner: p.id === room.ownerId // WAŻNE: Info dla frontendu
+        isOwner: p.id === room.ownerId
     }));
     io.to(room.id).emit("update-players", playerList);
 }
 
-// --- LOGIKA TIMERA ---
 function startRoundTimer(io, room) {
     if (room.timerInterval) clearInterval(room.timerInterval);
     room.timeLeft = 120;
@@ -31,13 +28,12 @@ function startRoundTimer(io, room) {
     }, 1000);
 }
 
-// --- LOGIKA RUND ---
 function nextRound(io, room) {
     if (room.round >= room.totalRounds) {
         clearInterval(room.timerInterval);
         io.to(room.id).emit("game-over", { message: "Game Over!" });
         room.isGameStarted = false;
-        sendScoreUpdate(io, room); // Aktualizacja statusów
+        sendScoreUpdate(io, room);
         return;
     }
 
@@ -53,34 +49,30 @@ function nextRound(io, room) {
 
     io.to(room.id).emit("new-round", {
         round: room.round,
-        maxRounds: room.totalRounds, // Wysyłamy dynamiczną liczbę rund
+        maxRounds: room.totalRounds,
         painterNickname: painter.nickname,
         painterId: painter.id,
         timeLeft: 120
     });
 
-    sendScoreUpdate(io, room); // Aktualizacja (kto rysuje)
+    sendScoreUpdate(io, room);
     io.to(painter.id).emit("secret-word", { word: room.currentAnswer });
 }
 
-// --- START GRY ---
 export function StartGameHandler(io, socket, rooms) {
     socket.on("start-game", (roomId) => {
         const room = rooms.find(r => r.id === roomId);
 
         if (!room) return;
 
-        // WERYFIKACJA WŁAŚCICIELA
         if (socket.id !== room.ownerId) {
             console.log(`Gracz ${socket.id} próbował startować, ale nie jest właścicielem.`);
             return;
         }
 
         if (!room.isGameStarted) {
-            // USTAWIANIE LICZBY RUND: Gracze * 3
             const playerCount = room.players.length;
             room.totalRounds = playerCount * 3;
-            // Zabezpieczenie na wypadek 0 graczy (teoretycznie niemożliwe tu)
             if (room.totalRounds === 0) room.totalRounds = 3;
 
             room.isGameStarted = true;
@@ -93,15 +85,12 @@ export function StartGameHandler(io, socket, rooms) {
     });
 }
 
-// --- SYNCHRONIZACJA (Gdy gracz wchodzi na CharadesPage) ---
 export function SyncGameHandler(io, socket, rooms) {
     socket.on("sync-game", (roomId) => {
         const room = rooms.find(r => r.id === roomId);
         if (room) {
-            // Wyślij aktualną listę graczy (żeby wiedział kto jest ownerem)
             sendScoreUpdate(io, room);
 
-            // Jeśli gra trwa, wyślij stan gry
             if (room.isGameStarted) {
                 socket.emit("new-round", {
                     round: room.round,
@@ -111,7 +100,6 @@ export function SyncGameHandler(io, socket, rooms) {
                     timeLeft: room.timeLeft
                 });
 
-                // Jeśli to malarz się odświeżył, przypomnij mu hasło
                 if (socket.id === room.drawingPlayerId) {
                     socket.emit("secret-word", { word: room.currentAnswer });
                 }
@@ -120,7 +108,6 @@ export function SyncGameHandler(io, socket, rooms) {
     });
 }
 
-// --- SPRAWDZANIE ODPOWIEDZI ---
 export function CheckCorrectAnswerHandler(io, socket, rooms) {
     socket.on("message", (data) => {
         const room = rooms.find(r => r.id === data.roomId);
@@ -128,7 +115,9 @@ export function CheckCorrectAnswerHandler(io, socket, rooms) {
         if (socket.id === room.drawingPlayerId) return;
         if (room.solvedBy && room.solvedBy.includes(socket.id)) return;
 
-        if (data.message.trim().toLowerCase() === room.currentAnswer.toLowerCase()) {
+        let playerAnswer = data.message.trim().toLowerCase();
+
+        if ((playerAnswer === room.currentAnswer.toLowerCase()) || (normalizeAnswer(playerAnswer) === room.currentAnswer.toLowerCase())) {
             const timeBonus = Math.floor(room.timeLeft / 10);
             const pointsScored = (9 + timeBonus) * 10;
 
@@ -150,10 +139,9 @@ export function CheckCorrectAnswerHandler(io, socket, rooms) {
                 word: room.currentAnswer
             });
 
-            sendScoreUpdate(io, room); // Aktualizacja punktów
+            sendScoreUpdate(io, room);
 
             if (room.solvedBy.length >= room.players.length - 1) {
-                //WSZYSCY ZGADLI
                 clearInterval(room.timerInterval);
                 setTimeout(() => nextRound(io, room), 2000);
             }

@@ -1,58 +1,38 @@
 
-let answers = ["cat", "dog", "house"]
-
+let answers = ["pies", "kot", "lampa", "żyrafa", "balon", "parasol", "kaskader", "pirat", "samochód", "motocykl", "samolot", "czołg", "morderca", "pistolet", "superman", "dom", "latarka", "pająk", "statek", "morze", "góry",
+   "sztaluga", "kosmita", "wilkołak", "zombie", "podanie o prace", "piła łańcuchowa", "matematyka", "salon gier", "słoń", "bałwan", "małpa", "mario", "brachiozaur", "jabłko", "truskawka", "wiśnia", "porzeczka"
+]
 
 export function generateRandomAnswer(){
     return answers[Math.floor(Math.random() * answers.length)];
 }
 
-export function isCorrectAnswer(room, userAnswer){
-    return userAnswer === room.currentAnswer;
-}
 
+export function normalizeAnswer(msg){
 
-function nextRound(io, room) {
-    if (room.round >= room.totalRounds) {
-        io.to(room.id).emit("game-over", { message: "Game over!" });
-        return;
+    let letterMap = new Map(
+        [
+            ['ą', 'a'],
+            ['ę', 'e'],
+            ['ł', 'l'],
+            ['ć', 'c'],
+            ['ś', 's'],
+            ['ź', 'z'],
+            ['ż', 'z'],
+            ['ó', 'o'],
+            ['ń', 'n']
+        ]
+    )
+
+    let normalizedMsg = "";
+
+    for (const letter of msg) {
+       let l = letter;
+        if(letterMap.has(l)){
+            l = letterMap.get(l);
+        }
+        normalizedMsg += l;
     }
 
-    room.round++;
-    room.currentAnswer = generateRandomAnswer();
-    // Wybieramy kolejnego gracza jako rysownika
-    const painterIndex = (room.round - 1) % room.players.length;
-    room.drawingPlayerId = room.players[painterIndex].id;
-
-    // Powiadom wszystkich o nowej rundzie
-    io.to(room.id).emit("new-round", {
-        round: room.round,
-        painterNickname: room.players[painterIndex].nickname,
-        painterId: room.drawingPlayerId
-    });
-
-    // Wyślij hasło TYLKO do rysownika
-    io.to(room.drawingPlayerId).emit("secret-word", { word: room.currentAnswer });
-}
-
-// Zaktualizuj CheckCorrectAnswerHandler w tym samym pliku
-export function CheckCorrectAnswerHandler(io, socket, rooms) {
-    socket.on("message", (data) => {
-        const room = rooms.find(r => r.id === data.roomId);
-        if (!room || socket.id === room.drawingPlayerId) return; // Rysownik nie może zgadywać
-
-        if (data.message.toLowerCase() === room.currentAnswer.toLowerCase()) {
-            // Logika przyznawania punktów
-            const player = room.players.find(p => p.id === socket.id);
-            player.points += 10;
-
-            io.to(room.id).emit("correct-answer", {
-                winner: player.nickname,
-                word: room.currentAnswer,
-                points: player.points
-            });
-
-            // Rozpocznij kolejną rundę po krótkiej przerwie
-            setTimeout(() => nextRound(io, room), 3000);
-        }
-    });
+    return normalizedMsg;
 }
