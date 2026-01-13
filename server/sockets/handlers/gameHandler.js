@@ -117,7 +117,7 @@ export function CheckCorrectAnswerHandler(io, socket, rooms) {
 
         let playerAnswer = data.message.trim().toLowerCase();
 
-        if ((playerAnswer === room.currentAnswer.toLowerCase()) || (normalizeAnswer(playerAnswer) === room.currentAnswer.toLowerCase())) {
+        if ((playerAnswer === room.currentAnswer.toLowerCase()) || (normalizeAnswer(playerAnswer) === normalizeAnswer(room.currentAnswer.toLowerCase()))) {
             const timeBonus = Math.floor(room.timeLeft / 10);
             const pointsScored = (9 + timeBonus) * 10;
 
