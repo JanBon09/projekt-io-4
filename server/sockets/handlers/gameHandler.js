@@ -8,7 +8,7 @@ export function sendScoreUpdate(io, room) {
         points: p.points,
         isDrawer: p.id === room.drawingPlayerId,
         isOwner: p.id === room.ownerId
-    }));
+    })).sort((a, b) => b.points - a.points)
     io.to(room.id).emit("update-players", playerList);
 }
 
@@ -163,8 +163,29 @@ export function CheckCorrectAnswerHandler(io, socket, rooms) {
     });
 }
 
-export function RenderDrawing(socket) {
+export function RenderDrawing(io, socket, rooms) {
     socket.on("draw", (data) => {
-        socket.to(data.roomId).emit('drawing', data);
-    })
+        const room = rooms.find(r => r.id === data.roomId);
+        if (room) {
+            room.currentStroke.push(data);
+            socket.to(data.roomId).emit('drawing', data);
+        }
+    });
+
+    socket.on("end-stroke", (roomId) => {
+        const room = rooms.find(r => r.id === roomId);
+        if (room && room.currentStroke.length > 0) {
+            room.drawHistory.push([...room.currentStroke]);
+            room.currentStroke = [];
+        }
+    });
+
+    socket.on("undo", (roomId) => {
+        const room = rooms.find(r => r.id === roomId);
+        if (room && room.drawHistory.length > 0) {
+            room.drawHistory.pop();
+
+            io.to(roomId).emit("redraw-canvas", room.drawHistory);
+        }
+    });
 }

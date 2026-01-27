@@ -2,7 +2,8 @@
     border: 5px solid #383636;
     border-radius: 20px;
     background: linear-gradient(to right, #A717D7, #570C71);
-    font-family: "Pixelify Sans SemiBold", "serif";
+    font-family: 'Pixelify Sans', sans-serif;
+    font-weight: bold;
     font-size: 2.5vw;
     width: 20%;
     color: white;

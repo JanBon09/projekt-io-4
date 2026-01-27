@@ -47,6 +47,19 @@ function CharadesPage() {
 
         socket.on("drawing", (data) => drawUser(data));
 
+        socket.on("redraw-canvas", (history) => {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext("2d");
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            history.forEach(stroke => {
+                stroke.forEach(segment => {
+                    drawUser(segment);
+                });
+            });
+        });
+
         socket.on("echo", (data) => {
             setMessages((prev) => [...prev, {username: data["sender"], message: data["message"], type: "normal"}]);
         });
@@ -116,6 +129,7 @@ function CharadesPage() {
             socket.off("player-joined");
             socket.off("player-left");
             socket.off("update-players");
+            socket.off("redraw-canvas");
         }
     }, [socket, id]);
 
@@ -149,6 +163,8 @@ function CharadesPage() {
         }
         setLastPos([x2,y2])
     }
+
+
 
     const drawUser = (data) => {
         const canvas = canvasRef.current;
@@ -191,6 +207,23 @@ function CharadesPage() {
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
+    const copyLink = async () =>{
+        await navigator.clipboard.writeText(`https://www.alexandria-pcz.com/charades/${id}`);
+    }
+
+    const handleMouseUp = () => {
+        setIsDrawing(false);
+        if (isPainter && gameActive) {
+            socket.emit("end-stroke", id);
+        }
+    };
+
+    const handleUndo = () => {
+        if (isPainter && gameActive) {
+            socket.emit("undo", id);
+        }
+    };
+
     return (
         <div className={styles.mainContainer}>
 
@@ -218,6 +251,7 @@ function CharadesPage() {
                 <div className={styles.gameInfoBar}>
                     {!gameActive ? (
                         <div className={styles.lobbyInfo}>
+                            {/*<button className={styles.copyBtn} onClick={copyLink}>COPY LINK</button>*/}
                             <h2>Room ID: {id}</h2>
                             {isOwner ? (
                                 <button className={styles.startBtn} onClick={startGame}>START</button>
@@ -258,7 +292,8 @@ function CharadesPage() {
                 <canvas width="1920" height="1080"
                         onMouseMove={draw}
                         onMouseDown={() => setIsDrawing(true)}
-                        onMouseUp={() => setIsDrawing(false)}
+                        onMouseUp={() => handleMouseUp()}
+                        onMouseLeave={() => setIsDrawing(false)}
                         ref={canvasRef}
                         className={styles.mainCanvas}>
                 </canvas>
@@ -269,6 +304,25 @@ function CharadesPage() {
                     <AnimatedComponent frames={8} totalWidth={768} frameHeight={93} widthPercent={10} heightPercent={80} spriteSheet={cursorLgSprite} timeout={70} onClick={() => changeStrokeSize("lg")} />
                     <AnimatedComponent frames={8} totalWidth={768} frameHeight={93} widthPercent={10} heightPercent={80} spriteSheet={pencilButtonSprite} timeout={70} onClick={() => setState("DRAWING")} />
                     <AnimatedComponent frames={8} totalWidth={768} frameHeight={93} widthPercent={10} heightPercent={80} spriteSheet={eraserButtonSheet} timeout={70} onClick={() => setState("ERASING")} />
+                    <div
+                        onClick={handleUndo}
+                        style={{
+                            cursor: 'pointer',
+                            background: '#FFD700',
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: '3px solid #b39700',
+                            boxShadow: '0 4px 0 #b39700',
+                            marginLeft: '20px'
+                        }}
+                        title="Cofnij (Undo)"
+                    >
+                        <span style={{fontSize: '24px', fontWeight: 'bold'}}>↺</span>
+                    </div>
                 </div>
 
                 {(isPainter || !gameActive) && (
@@ -279,6 +333,7 @@ function CharadesPage() {
                         <ColorBucket color="yellow" onClick={setColor}></ColorBucket>
                         <ColorBucket color="green" onClick={setColor}></ColorBucket>
                         <ColorBucket color="blue" onClick={setColor}></ColorBucket>
+
                     </div>
                 )}
             </div>

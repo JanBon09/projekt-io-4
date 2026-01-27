@@ -10,11 +10,25 @@ import { useParams } from "react-router-dom";
 import styles from "./SongPage.module.css";
 
 function GuessSongPage() {
-  const { id } = useParams();
-  const inputRef = useRef(null);
-  const socket = useSocket();
-  const [msg, setMsg] = useState("");
-  const [messages, setMessages] = useState([]);
+    const {id} = useParams();
+    const inputRef = useRef(null)
+    const socket = useSocket();
+    const [msg, setMsg] = useState("");
+    const [messages, setMessages] = useState([]);
+
+    const [gameActive, setGameActive] = useState(false);
+    const [round, setRound] = useState(0);
+    const [maxRounds, setMaxRounds] = useState(5);
+    const [timeLeft, setTimeLeft] = useState(30);
+    const [players, setPlayers] = useState([]);
+
+    const [hintWord, setHintWord] = useState("");
+    const [clueText, setClueText] = useState("");
+    const [started, setStarted] = useState(false);
+    const [showReveal, setShowReveal] = useState(false);
+    const [summary, setSummary] = useState({ 
+        title: "", cover: "", artist: "", album: "", year: "", roundWinners: [] 
+    });
 
   const [gameActive, setGameActive] = useState(false);
   const [round, setRound] = useState(0);
@@ -47,7 +61,39 @@ function GuessSongPage() {
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit("sync-game", id);
+        socket.on("new-round", (data) => {
+            setShowReveal(false);
+            setClueText(""); 
+            setHintWord("");
+            setGameActive(true);
+            setRound(data.round);
+            setMaxRounds(data.maxRounds);
+
+            if(audioRef.current) {
+                audioRef.current.pause();
+            }
+
+            const songUrl = data.songUrl;
+            if(songUrl) {
+                audioRef.current.src = songUrl;
+                audioRef.current.load();
+                audioRef.current.fastSeek(30-data.timeLeft);
+                setStarted(true);
+                audioRef.current.play().catch(e => {
+                    console.warn("Autoplay blocked");
+                });
+            }
+
+            setTimeLeft(data.timeLeft || 30);
+            setHintWord(data.hint || "");
+            setClueText(data.clue || "");
+
+            setMessages((prev) => [...prev, {
+                username: "SYSTEM",
+                message: `Runda ${data.round} / ${data.maxRounds}!`,
+                type: "system"
+            }]);
+        });
 
     socket.on("echo", (data) => {
       setMessages((prev) => [
@@ -252,6 +298,110 @@ function GuessSongPage() {
                   Czekanie na właściciela...
                 </span>
               )}
+    const copyLink = async () =>{
+        await navigator.clipboard.writeText(`https://www.alexandria-pcz.com/guess-song/${id}`);
+    }
+
+    return (
+        <div className={styles.mainContainer}>
+            <div className={styles.leftContainer}>
+                <div className={styles.upLeftContainer}>
+                    <BackArrow roomId={id} callback={started ? pauseSong : null}></BackArrow>
+                    <div className={styles.scoreboardContainer}>
+                        <h3 className={styles.scoreTitle}>Wyniki</h3>
+                        <ul className={styles.playerList}>
+                            {players.map((p) => (
+                                <li key={p.id} className={styles.playerItem}>
+                                    <span className={styles.playerName}>
+                                        {p.isOwner && "👑"} {p.nickname}
+                                    </span>
+                                    <span className={styles.playerPoints}>{p.points}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div className={styles.middleContainer}>
+                <div className={styles.gameInfoBar}>
+                    {!gameActive ? (
+                        <div className={styles.lobbyInfo}>
+                            {/*<button className={styles.copyBtn} onClick={copyLink}>COPY LINK</button>*/}
+                            <h2>Pokój: {id}</h2>
+                            {isOwner ? (
+                                <button className={styles.startBtn} onClick={startGame}>START</button>
+                            ) : (
+                                <span style={{color: '#aaa', fontStyle: 'italic'}}>Czekanie na właściciela...</span>
+                            )}
+                        </div>
+                    ) : (
+                        <div className={styles.activeGameInfo}>
+                            <div className={styles.infoItem}>
+                                <span className={styles.label}>Runda</span>
+                                <span className={styles.value}>{round}/{maxRounds}</span>
+                            </div>
+                            <div className={styles.infoItem}>
+                                <span className={styles.label}>Czas</span>
+                                <span className={`${styles.timerValue} ${timeLeft < 10 ? styles.timerRed : ''}`}>
+                                    {formatTime(timeLeft)}
+                                </span>
+                            </div>
+                            <div className={styles.infoItem}>
+                                <span className={styles.label}>Tytuł</span>
+                                <span className={styles.secretWord} style={{letterSpacing: '3px', whiteSpace: 'pre-wrap'}}>
+                                    {hintWord}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div className={styles.mainCanvas}>
+                    {showReveal ? (
+                        <div className={styles.revealContainer}>
+                            <div className={styles.revealLeft}>
+                                <h3 className={styles.winnersTitle}>Najszybsi:</h3>
+                                <ul className={styles.winnersList}>
+                                    {summary.roundWinners.length > 0 ? (
+                                        summary.roundWinners.map((winner, index) => (
+                                            <li key={index} className={styles.winnerItem} style={{animationDelay: `${index * 0.1}s`}}>
+                                                <div style={{display:'flex', alignItems:'center'}}>
+                                                    <span className={styles.winnerRank}>
+                                                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
+                                                    </span>
+                                                    <span className={styles.winnerName}>{winner.nickname}</span>
+                                                </div>
+                                                <span className={styles.winnerPoints}>+{winner.points}</span>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <li className={styles.noWinners}>Nikt nie zgadł...</li>
+                                    )}
+                                </ul>
+                            </div>
+
+                            <div className={styles.revealRight}>
+                                {summary.cover && (
+                                    <img src={summary.cover} alt="Album Art" className={styles.revealImage} />
+                                )}
+                                <h2 className={styles.revealTitle}>{summary.title}</h2>
+                                <h3 className={styles.revealArtist}>{summary.artist}</h3>
+                                <div className={styles.revealMeta}>
+                                    <span className={styles.revealAlbum}>{summary.album}</span>
+                                    {summary.album && summary.year && <span className={styles.separator}>•</span>}
+                                    <span className={styles.revealYear}>{summary.year}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ) : gameActive ? (
+                        <div className={styles.clueText}>
+                            "{clueText}"
+                        </div>
+                    ) : (
+                        <div style={{color: '#555'}}>Tu pojawi się fragment piosenki...</div>
+                    )}
+                </div>
             </div>
           ) : (
             <div className={styles.activeGameInfo}>

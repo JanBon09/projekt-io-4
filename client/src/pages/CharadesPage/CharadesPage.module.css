@@ -8,7 +8,6 @@
     position: relative;
 }
 
-/* --- LEWA KOLUMNA (20%) --- */
 .leftContainer {
     width: 20%;
     height: 100%;
@@ -27,7 +26,6 @@
     min-height: 0;
 }
 
-/* Scoreboard */
 .scoreboardContainer {
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid #555;
@@ -71,6 +69,7 @@
 
 .playerPoints {
     color: #4CAF50;
+    font-family: "Press Start 2P", cursive;
     font-weight: bold;
 }
 
@@ -113,6 +112,22 @@
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 0 4px 0 #1e7e34;
+}
+
+.copyBtn {
+    background: #4287f5;
+    color: white;
+    border: none;
+    padding: 8px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #2866c9;
+}
+.copyBtn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #2866c9;
 }
 
 .startBtn:active {

@@ -1,6 +1,6 @@
 
 let answers = ["pies", "kot", "lampa", "żyrafa", "balon", "parasol", "kaskader", "pirat", "samochód", "motocykl", "samolot", "czołg", "morderca", "pistolet", "superman", "dom", "latarka", "pająk", "statek", "morze", "góry",
-   "sztaluga", "kosmita", "wilkołak", "zombie", "podanie o prace", "piła łańcuchowa", "matematyka", "salon gier", "słoń", "bałwan", "małpa", "mario", "brachiozaur", "jabłko", "truskawka", "wiśnia", "porzeczka"
+   "sztaluga", "kosmita", "wilkołak", "zombie", "matematyka", "salon gier", "słoń", "bałwan", "małpa", "mario", "brachiozaur", "jabłko", "truskawka", "wiśnia", "porzeczka"
 ]
 
 export function generateRandomAnswer(){

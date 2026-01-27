@@ -1,5 +1,3 @@
-import { title } from "process";
-
 const songs = [
     { title: "Bohemian Rhapsody", artist:"Queen", clue: "Mama, just killed a man...",  country: "US"},
     { title: "Shape of You", artist:"Ed Sheeran", clue: "The club isn't the best place to find a lover...",  country: "US" },
@@ -151,6 +149,21 @@ export async function getSongDataFromObject(songObj) {
                 songUrl: songUrl,
                 albumCover: albumCover
             });
+    if(result.ok){
+        const data = await result.json();
+        let songUrl = "";
+        let albumCover = "";
+        let albumName = "";
+        let releaseYear = "";
+        let artistName = song.artist;
+
+        if(data.results.length > 0){
+            const track = data.results[0];
+            songUrl = track.previewUrl;
+            albumCover = track.artworkUrl100.replace("100x100bb", "600x600bb");
+            albumName = track.collectionName;
+            artistName = track.artistName;
+            releaseYear = track.releaseDate ? track.releaseDate.substring(0, 4) : "";
         }
     } catch (e) {
         console.error("iTunes API error:", e);

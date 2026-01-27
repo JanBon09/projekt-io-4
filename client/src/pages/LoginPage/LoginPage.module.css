@@ -99,7 +99,7 @@
     background-color: #201D1D;
     border: 5px solid #5E1277;
     border-radius: 20px;
-    font-family: "Pixelify Sans Medium", serif;
+    font-family: "Pixelify Sans", sans-serif;
     color: white;
     padding: 10px;
     width: 25vh;
@@ -112,7 +112,8 @@
     border: 5px solid #383636;
     border-radius: 20px;
     background: linear-gradient(to right, #A717D7, #570C71);
-    font-family: "Pixelify Sans SemiBold", "serif";
+    font-family: "Pixelify Sans", sans-serif;
+    font-weight: bold;
     font-size: 2rem;
     width: 50%;
     color: white;

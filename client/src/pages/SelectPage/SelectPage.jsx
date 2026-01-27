@@ -58,7 +58,7 @@ function SelectPage() {
                     }}
                     type="text"
                     className={styles.inputBox}
-                    onChange={(e) => setRoomId(e.target.value)}
+                    onChange={(e) => setRoomId(e.target.value.trim())}
                     value={roomId}
                     placeholder="Enter the room code..."
                 />
@@ -66,8 +66,7 @@ function SelectPage() {
                 <div style={{ marginTop: '20px' }}>
                     <GradientButton 
                         label="JOIN" 
-                        onClick={() => joinRoom(roomId)} 
-                        style={{ width: "25vh", height: "auto", minHeight: "50px" }}
+                        onClick={() => joinRoom(roomId)}
                     />
                 </div>
             </div>

@@ -123,6 +123,23 @@
     box-shadow: 0 4px 0 #1e7e34;
 }
 
+.copyBtn {
+    background: #4287f5;
+    color: white;
+    border: none;
+    padding: 8px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #2866c9;
+}
+
+.copyBtn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #2866c9;
+}
+
 .startBtn:active {
     transform: translateY(2px);
     box-shadow: 0 2px 0 #1e7e34;
@@ -149,7 +166,6 @@
     margin-bottom: 5px;
 }
 
-/* Licznik rundy (Press Start 2P) */
 .value {
     font-family: "Press Start 2P", cursive;
     font-size: 1.2rem;
@@ -157,7 +173,6 @@
     font-weight: normal;
 }
 
-/* Zegar (Press Start 2P) */
 .timerValue {
     font-family: "Press Start 2P", cursive;
     font-size: 1.3rem;
@@ -183,7 +198,6 @@
     font-weight: bold;
 }
 
-/* --- GŁÓWNY CANVAS --- */
 .mainCanvas {
     background-color: #1a1a1a; 
     box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
@@ -206,7 +220,6 @@
     color: white;
 }
 
-/* --- Narzędzia / Rysowanie --- */
 .toolsContainer {
     margin-top: 25px;
     display: flex;
@@ -255,7 +268,6 @@
     position: absolute;
 }
 
-/* --- CZAT (Zaktualizowana czcionka) --- */
 .chatContainer {
     width: 100%;
     flex: 1;
@@ -267,7 +279,6 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    /* ZMIANA: Ustawiamy Pixelify Sans dla całego kontenera czatu */
     font-family: "Pixelify Sans", sans-serif;
 }
 
@@ -292,7 +303,6 @@
     color: white;
     outline: none;
     box-sizing: border-box;
-    /* ZMIANA: Pixelify Sans dla inputa */
     font-family: "Pixelify Sans", sans-serif;
 }
 
@@ -304,7 +314,6 @@
     font-size: 1.3rem;
     line-height: 1.4;
     word-wrap: break-word;
-    /* ZMIANA: Upewniamy się, że wiadomość też ma dobrą czcionkę */
     font-family: "Pixelify Sans", sans-serif;
 }
 
@@ -326,7 +335,6 @@
     100% { transform: scale(1); }
 }
 
-/* --- REVEAL LAYOUT (SPLIT SCREEN) --- */
 
 .revealContainer {
     display: flex;
@@ -338,7 +346,6 @@
     gap: 20px;
 }
 
-/* LEWA STRONA (Zwycięzcy) */
 .revealLeft {
     width: 40%;
     height: 90%;
@@ -380,7 +387,6 @@
     animation: slideInLeft 0.5s ease-out backwards;
 }
 
-/* Ranking (Press Start 2P) */
 .winnerRank {
     font-family: "Press Start 2P", cursive;
     font-size: 0.9rem;
@@ -399,7 +405,6 @@
     max-width: 140px;
 }
 
-/* Punkty zwycięzców (Press Start 2P) */
 .winnerPoints {
     color: #4CAF50;
     font-family: "Press Start 2P", cursive;
@@ -415,7 +420,6 @@
     width: 100%;
 }
 
-/* PRAWA STRONA (Album Info) */
 .revealRight {
     width: 60%;
     height: 100%;
@@ -475,7 +479,6 @@
     text-overflow: ellipsis;
 }
 
-/* Rok (Press Start 2P) */
 .revealYear {
     font-family: "Press Start 2P", cursive;
     font-size: 0.9rem;
