@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
     LeaveRoom(socket, rooms, io);
 
     // Game
-    RenderDrawing(io, socket, rooms);
+    RenderDrawing(socket);
     StartGameHandler(io, socket, rooms);
     CheckCorrectAnswerHandler(io, socket, rooms);
     SyncGameHandler(io, socket, rooms);

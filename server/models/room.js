@@ -16,8 +16,5 @@ export class Room {
         this.timerInterval = null;
         this.timeLeft = 0;
         this.solvedBy = [];
-
-        this.drawHistory = [];
-        this.currentStroke = [];
     }
 }
